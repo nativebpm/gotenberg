@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/nativebpm/gotenberg-client"
-	"github.com/nativebpm/gotenberg-client/model"
-	"github.com/nativebpm/gotenberg-client/templates"
+	"github.com/nativebpm/gotenberg-client/example/model"
+	"github.com/nativebpm/gotenberg-client/example/templates"
 )
 
 func main() {
