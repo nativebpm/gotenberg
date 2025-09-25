@@ -70,7 +70,7 @@ func convertHTMLToPDFExample(client *gotenberg.Client, htmlDoc *bytes.Buffer) er
 		gotenberg.WithLandscape(false),
 		gotenberg.WithScale(1.0),
 		gotenberg.WithOutputFilename("invoice.pdf"),
-		gotenberg.A4(), // Use predefined A4 paper size
+		gotenberg.WithPaperSizeA4(),               // Use predefined A4 paper size
 		gotenberg.WithMargins(1.0, 1.0, 1.0, 1.0), // 1 inch margins
 	)
 	if err != nil {
@@ -98,7 +98,7 @@ func convertURLToPDFExample(client *gotenberg.Client) error {
 	resp, err := client.ConvertURLToPDF("https://example.com",
 		gotenberg.WithPrintBackground(true),
 		gotenberg.WithOutputFilename("example.pdf"),
-		gotenberg.Letter(), // Use predefined Letter paper size
+		gotenberg.WithPaperSizeLetter(), // Use predefined Letter paper size
 	)
 	if err != nil {
 		return err
