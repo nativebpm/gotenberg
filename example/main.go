@@ -2,6 +2,10 @@ package main
 
 import (
 	"bytes"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/png"
 	"log/slog"
 	"net/http"
 	"os"
@@ -52,6 +56,10 @@ func main() {
 func convertHTMLToPDF(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
 	slog.Info("Converting HTML to PDF with options...")
 
+	// generate a small logo and pass it as an additional file so the template can load logo.png
+	logo := generateLogoImage()
+	files := map[string][]byte{"logo.png": logo}
+
 	resp, err := client.ConvertHTMLToPDF(htmlDoc.Bytes(),
 		gotenberg.WithPrintBackground(true),
 		gotenberg.WithLandscape(false),
@@ -59,6 +67,7 @@ func convertHTMLToPDF(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
 		gotenberg.WithOutputFilename("invoice.pdf"),
 		gotenberg.WithPaperSizeA4(),
 		gotenberg.WithMargins(1.0, 1.0, 1.0, 1.0),
+		gotenberg.WithHTMLAdditionalFiles(files),
 	)
 	if err != nil {
 		return err
@@ -104,6 +113,9 @@ func convertURLToPDF(client *gotenberg.Client) error {
 func convertHTMLToPDFWithWebhook(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
 	slog.Info("Converting HTML to PDF with webhook (async)...")
 
+	logo := generateLogoImage()
+	files := map[string][]byte{"logo.png": logo}
+
 	resp, err := client.ConvertHTMLToPDF(htmlDoc.Bytes(),
 		gotenberg.WithPrintBackground(true),
 		gotenberg.WithOutputFilename("invoice_async.pdf"),
@@ -116,6 +128,7 @@ func convertHTMLToPDFWithWebhook(client *gotenberg.Client, htmlDoc *bytes.Buffer
 			"Authorization":   "Bearer your-token",
 			"X-Custom-Header": "custom-value",
 		}),
+		gotenberg.WithHTMLAdditionalFiles(files),
 	)
 	if err != nil {
 		return err
@@ -131,7 +144,12 @@ func convertHTMLToPDFWithWebhook(client *gotenberg.Client, htmlDoc *bytes.Buffer
 func convertHTMLMinimal(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
 	slog.Info("Converting HTML to PDF (minimal, no options)...")
 
-	resp, err := client.ConvertHTMLToPDF(htmlDoc.Bytes())
+	logoImage := generateLogoImage()
+	files := map[string][]byte{"logo.png": logoImage}
+
+	resp, err := client.ConvertHTMLToPDF(htmlDoc.Bytes(),
+		gotenberg.WithHTMLAdditionalFiles(files),
+	)
 	if err != nil {
 		return err
 	}
@@ -152,4 +170,29 @@ func makeHtml(data model.Invoice) *bytes.Buffer {
 	buf := bytes.NewBuffer(nil)
 	templates.InvoceTemplate.Execute(buf, data)
 	return buf
+}
+
+// generateLogoImage creates a simple PNG logo and returns its bytes.
+// The example template references logo.png, so we provide it via WithHTMLAdditionalFiles.
+func generateLogoImage() []byte {
+	// Create a small 300x80 image with a colored rectangle and text-like block
+	const w, h = 300, 80
+	img := image.NewRGBA(image.Rect(0, 0, w, h))
+
+	// background white
+	draw.Draw(img, img.Bounds(), &image.Uniform{C: color.White}, image.Point{}, draw.Src)
+
+	// draw a blue rectangle on the left
+	blue := color.RGBA{R: 10, G: 102, B: 194, A: 255}
+	rect := image.Rect(10, 10, 90, h-10)
+	draw.Draw(img, rect, &image.Uniform{C: blue}, image.Point{}, draw.Src)
+
+	// draw a gray bar to mimic text lines
+	gray := color.RGBA{R: 200, G: 200, B: 200, A: 255}
+	draw.Draw(img, image.Rect(110, 20, w-10, 36), &image.Uniform{C: gray}, image.Point{}, draw.Src)
+	draw.Draw(img, image.Rect(110, 44, w-60, 60), &image.Uniform{C: gray}, image.Point{}, draw.Src)
+
+	var buf bytes.Buffer
+	png.Encode(&buf, img)
+	return buf.Bytes()
 }

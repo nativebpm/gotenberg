@@ -62,7 +62,16 @@ func WithWebhookMethods(method, errorMethod string) ConvOption {
 
 func WithWebhookExtraHeaders(headers map[string]string) ConvOption {
 	return func(c *convConfig) {
-		c.WebhookExtraHeaders = headers
+		if headers == nil {
+			c.WebhookExtraHeaders = nil
+			return
+		}
+		// Make a shallow copy to avoid retaining a reference to a caller-owned map
+		copied := make(map[string]string, len(headers))
+		for k, v := range headers {
+			copied[k] = v
+		}
+		c.WebhookExtraHeaders = copied
 	}
 }
 

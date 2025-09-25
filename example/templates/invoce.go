@@ -134,6 +134,9 @@ const invoiceTemplate = `
                                         <td colspan="2">
                                                 <table>
                                                         <tr>
+                                                                <td class="title">
+                                                                        <img src="logo.png" alt="Company logo" style="width: 100%; max-width: 300px" />
+                                                                </td>                                                        
                                                                 <td>
                                                                         Invoice #: {{.InvoiceNumber}}<br />
                                                                         Created: {{.CreatedAt}}<br />
