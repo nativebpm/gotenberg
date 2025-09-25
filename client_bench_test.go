@@ -10,23 +10,6 @@ import (
 	"testing"
 )
 
-/*
-Бенчмарки для анализа аллокации памяти в пакете Gotenberg:
-
-1. BenchmarkNewClient - Проверяет оверхед создания клиента (важно если клиент не переиспользуется)
-2. BenchmarkConvertURLToPDF_* - Основная функциональность с разным количеством опций
-3. BenchmarkConvertHTMLToPDF_* - HTML конвертация с файлами (много аллокаций для multipart)
-4. BenchmarkConvertMarkdownToPDF_* - Markdown конвертация
-5. BenchmarkOptionCreation - Стоимость functional options (замыкания + аллокации в хип)
-6. BenchmarkConfigApplication - Применение опций к конфигурации
-7. BenchmarkMultipartFormCreation - Самая дорогая операция (multipart/form-data)
-8. BenchmarkUtilityFunctions - Pointer helpers (Bool/Float64/String)
-9. BenchmarkLargePayload - Поведение с большими данными
-
-Запуск: go test -bench=. -benchmem -benchtime=5s ./pkg/gotenberg/
-Анализ: go test -bench=BenchmarkConvertHTMLToPDF_WithFiles -benchmem -memprofile=mem.prof
-*/
-
 // mockGotenbergServerForBench creates a lightweight mock server for benchmarking
 func mockGotenbergServerForBench() *httptest.Server {
 	// Minimal PDF response for benchmarking
@@ -45,8 +28,9 @@ func mockGotenbergServerForBench() *httptest.Server {
 	}))
 }
 
-// BenchmarkNewClient benchmarks client creation - важно для понимания оверхеда создания клиента
-// Полезно если клиент создается часто, а не переиспользуется
+// BenchmarkNewClient measures client creation overhead.
+// Important if clients are created frequently instead of being reused.
+// Should show minimal allocations since Client is a simple struct.
 func BenchmarkNewClient(b *testing.B) {
 	httpClient := &http.Client{}
 	baseURL := "http://localhost:3000"
@@ -59,7 +43,8 @@ func BenchmarkNewClient(b *testing.B) {
 	}
 }
 
-// BenchmarkConvertURLToPDF_NoOptions benchmarks URL to PDF conversion without options
+// BenchmarkConvertURLToPDF_NoOptions measures URL to PDF conversion without any options.
+// This is the baseline performance with minimal allocations from multipart form creation.
 func BenchmarkConvertURLToPDF_NoOptions(b *testing.B) {
 	server := mockGotenbergServerForBench()
 	defer server.Close()
@@ -79,7 +64,8 @@ func BenchmarkConvertURLToPDF_NoOptions(b *testing.B) {
 	}
 }
 
-// BenchmarkConvertURLToPDF_WithOptions benchmarks URL to PDF conversion with options
+// BenchmarkConvertURLToPDF_WithOptions measures URL to PDF conversion with common options.
+// Tests functional options pattern overhead and multipart form creation efficiency.
 func BenchmarkConvertURLToPDF_WithOptions(b *testing.B) {
 	server := mockGotenbergServerForBench()
 	defer server.Close()
@@ -105,7 +91,8 @@ func BenchmarkConvertURLToPDF_WithOptions(b *testing.B) {
 	}
 }
 
-// BenchmarkConvertURLToPDF_ManyOptions benchmarks URL to PDF conversion with many options
+// BenchmarkConvertURLToPDF_ManyOptions measures URL to PDF conversion with maximum options.
+// Tests worst-case scenario with webhooks, headers, and all configuration options.
 func BenchmarkConvertURLToPDF_ManyOptions(b *testing.B) {
 	server := mockGotenbergServerForBench()
 	defer server.Close()
@@ -139,7 +126,8 @@ func BenchmarkConvertURLToPDF_ManyOptions(b *testing.B) {
 	}
 }
 
-// BenchmarkConvertHTMLToPDF_NoOptions benchmarks HTML to PDF conversion without options
+// BenchmarkConvertHTMLToPDF_NoOptions measures HTML to PDF conversion without options.
+// Includes file upload overhead but minimal configuration.
 func BenchmarkConvertHTMLToPDF_NoOptions(b *testing.B) {
 	server := mockGotenbergServerForBench()
 	defer server.Close()
@@ -159,7 +147,8 @@ func BenchmarkConvertHTMLToPDF_NoOptions(b *testing.B) {
 	}
 }
 
-// BenchmarkConvertHTMLToPDF_WithOptions benchmarks HTML to PDF conversion with options
+// BenchmarkConvertHTMLToPDF_WithOptions measures HTML to PDF conversion with configuration.
+// Tests combination of file uploads and functional options with optimized formatters.
 func BenchmarkConvertHTMLToPDF_WithOptions(b *testing.B) {
 	server := mockGotenbergServerForBench()
 	defer server.Close()
@@ -185,7 +174,8 @@ func BenchmarkConvertHTMLToPDF_WithOptions(b *testing.B) {
 	}
 }
 
-// BenchmarkConvertHTMLToPDF_WithFiles benchmarks HTML to PDF conversion with additional files
+// BenchmarkConvertHTMLToPDF_WithFiles measures HTML conversion with multiple additional files.
+// Tests multipart form efficiency with CSS, images, headers, and footers.
 func BenchmarkConvertHTMLToPDF_WithFiles(b *testing.B) {
 	server := mockGotenbergServerForBench()
 	defer server.Close()
@@ -214,7 +204,8 @@ func BenchmarkConvertHTMLToPDF_WithFiles(b *testing.B) {
 	}
 }
 
-// BenchmarkConvertMarkdownToPDF_NoOptions benchmarks Markdown to PDF conversion without options
+// BenchmarkConvertMarkdownToPDF_NoOptions measures Markdown to PDF conversion baseline.
+// Tests template HTML + Markdown files upload performance.
 func BenchmarkConvertMarkdownToPDF_NoOptions(b *testing.B) {
 	server := mockGotenbergServerForBench()
 	defer server.Close()
@@ -237,13 +228,13 @@ func BenchmarkConvertMarkdownToPDF_NoOptions(b *testing.B) {
 	}
 }
 
-// BenchmarkOptionCreation - критично для functional options pattern
-// Показывает стоимость создания замыканий и аллокации в хип
+// BenchmarkOptionCreation measures functional option creation cost.
+// Critical for understanding closure creation and heap allocation overhead.
 func BenchmarkOptionCreation(b *testing.B) {
 	b.Run("WithPaperSize", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			_ = WithPaperSize(8.5, 11) // 2 аллокации Float64 + замыкание
+			_ = WithPaperSize(8.5, 11) // Allocation behavior depends on WithPaperSize implementation
 		}
 	})
 
@@ -255,12 +246,13 @@ func BenchmarkOptionCreation(b *testing.B) {
 		b.ResetTimer()
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			_ = WithWebhookExtraHeaders(headers) // Может быть дорого из-за map
+			_ = WithWebhookExtraHeaders(headers) // May be expensive due to map copying
 		}
 	})
 }
 
-// BenchmarkConfigApplication benchmarks applying functional options to config
+// BenchmarkConfigApplication measures the cost of applying multiple options to config.
+// Tests functional option pattern performance with realistic option combinations.
 func BenchmarkConfigApplication(b *testing.B) {
 	options := []URLToPDFOption{
 		WithPaperSize(8.5, 11),
@@ -284,7 +276,8 @@ func BenchmarkConfigApplication(b *testing.B) {
 	}
 }
 
-// BenchmarkMultipartFormCreation benchmarks multipart form creation and writing
+// BenchmarkMultipartFormCreation measures raw multipart form creation performance.
+// Uses standard bytes.Buffer allocation for each iteration to measure baseline overhead.
 func BenchmarkMultipartFormCreation(b *testing.B) {
 	url := "https://example.com"
 
@@ -313,25 +306,26 @@ func BenchmarkMultipartFormCreation(b *testing.B) {
 	}
 }
 
-// BenchmarkUtilityFunctions - важно для оптимизации вспомогательных функций
-// Каждый вызов Bool/String/Float64 создает аллокацию в хип
+// BenchmarkUtilityFunctions measures optimized utility function performance.
+// Tests Bool/Float64 pointer helpers with pre-allocated common values.
 func BenchmarkUtilityFunctions(b *testing.B) {
 	b.Run("Bool", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			_ = Bool(true) // 1 аллокация - escape to heap
+			_ = Bool(true) // Zero allocations expected only if Bool uses pre-allocated booleans; actual results depend on implementation
 		}
 	})
 
 	b.Run("Float64", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			_ = Float64(1.5) // 1 аллокация - escape to heap
+			_ = Float64(1.5) // Benchmark Float64 pointer helper allocation behavior
 		}
 	})
 }
 
-// BenchmarkLargePayload benchmarks performance with large HTML payloads
+// BenchmarkLargePayload measures performance with large HTML content.
+// Tests memory allocation patterns and performance with substantial data.
 func BenchmarkLargePayload(b *testing.B) {
 	server := mockGotenbergServerForBench()
 	defer server.Close()
