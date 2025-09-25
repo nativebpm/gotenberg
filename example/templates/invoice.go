@@ -6,6 +6,6 @@ import (
 )
 
 //go:embed invoice.html
-var templatesFS embed.FS
+var invoiceTemplatesFS embed.FS
 
-var InvoiceTemplate = template.Must(template.ParseFS(templatesFS, "invoice.html"))
+var InvoiceTemplate = template.Must(template.ParseFS(invoiceTemplatesFS, "invoice.html"))
