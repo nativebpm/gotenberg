@@ -1,5 +1,7 @@
 package gotenberg
 
+type ConvOption func(*convConfig)
+
 func WithPaperSize(width, height float64) ConvOption {
 	return func(c *convConfig) {
 		c.PaperWidth = &width

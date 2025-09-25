@@ -30,5 +30,3 @@ type convConfig struct {
 	HeaderHTML []byte
 	FooterHTML []byte
 }
-
-type ConvOption func(*convConfig)
