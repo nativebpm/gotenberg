@@ -2,7 +2,7 @@ package templates
 
 import "html/template"
 
-const demo = `
+const invoiceTemplate = `
 <!DOCTYPE html>
 <html lang="en">
         <head>
@@ -201,4 +201,4 @@ const demo = `
 </html>
 `
 
-var Demo = template.Must(template.New("demo").Parse(demo))
+var InvoceTemplate = template.Must(template.New("invoice").Parse(invoiceTemplate))

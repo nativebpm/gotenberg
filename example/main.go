@@ -13,56 +13,43 @@ import (
 )
 
 func main() {
-	// Example of using new gotenberg package with functional options
+	gotenbergURL := `http://localhost:3000`
 
-	gotenbergURL := `http://localhost:3000` // or os.Getenv("GOTENBERG_URL")
-
-	// Create HTTP client
-	hc := &http.Client{
+	httpClient := &http.Client{
 		Timeout: 90 * time.Second,
 	}
 
-	// Create Gotenberg client
-	client := gotenberg.NewClient(hc, gotenbergURL)
+	client := gotenberg.NewClient(httpClient, gotenbergURL)
 
-	data := model.DemoData
-
-	// Generate HTML from template
-	htmlDoc := makeHtmlDemo(data)
-
-	// Example 1: Convert HTML to PDF (new functional options approach)
-	err := convertHTMLToPDFExample(client, htmlDoc)
-	if err != nil {
-		slog.Error("Failed to convert HTML to PDF", "error", err)
-		return
-	}
-
-	// Example 2: Convert URL to PDF with minimal options
-	err = convertURLToPDFExample(client)
+	err := convertURLToPDF(client)
 	if err != nil {
 		slog.Error("Failed to convert URL to PDF", "error", err)
 		return
 	}
 
-	// Example 3: Convert with webhook (async)
-	err = convertHTMLToPDFWithWebhookExample(client, htmlDoc)
+	data := model.InvoiceData
+	html := makeHtml(data)
+
+	err = convertHTMLToPDF(client, html)
+	if err != nil {
+		slog.Error("Failed to convert HTML to PDF", "error", err)
+		return
+	}
+
+	err = convertHTMLToPDFWithWebhook(client, html)
 	if err != nil {
 		slog.Error("Failed to convert HTML to PDF with webhook", "error", err)
 		return
 	}
 
-	// Example 4: Minimal conversion without any options
-	err = convertHTMLMinimalExample(client, htmlDoc)
+	err = convertHTMLMinimal(client, html)
 	if err != nil {
 		slog.Error("Failed minimal HTML conversion", "error", err)
 		return
 	}
-
-	slog.Info("All conversions completed successfully")
 }
 
-// convertHTMLToPDFExample demonstrates HTML to PDF conversion with options
-func convertHTMLToPDFExample(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
+func convertHTMLToPDF(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
 	slog.Info("Converting HTML to PDF with options...")
 
 	resp, err := client.ConvertHTMLToPDF(htmlDoc.Bytes(),
@@ -70,14 +57,13 @@ func convertHTMLToPDFExample(client *gotenberg.Client, htmlDoc *bytes.Buffer) er
 		gotenberg.WithLandscape(false),
 		gotenberg.WithScale(1.0),
 		gotenberg.WithOutputFilename("invoice.pdf"),
-		gotenberg.WithPaperSizeA4(),               // Use predefined A4 paper size
-		gotenberg.WithMargins(1.0, 1.0, 1.0, 1.0), // 1 inch margins
+		gotenberg.WithPaperSizeA4(),
+		gotenberg.WithMargins(1.0, 1.0, 1.0, 1.0),
 	)
 	if err != nil {
 		return err
 	}
 
-	// Save PDF
 	err = os.WriteFile("./invoice_new.pdf", resp.PDF, 0644)
 	if err != nil {
 		return err
@@ -91,20 +77,18 @@ func convertHTMLToPDFExample(client *gotenberg.Client, htmlDoc *bytes.Buffer) er
 	return nil
 }
 
-// convertURLToPDFExample demonstrates URL to PDF conversion
-func convertURLToPDFExample(client *gotenberg.Client) error {
+func convertURLToPDF(client *gotenberg.Client) error {
 	slog.Info("Converting URL to PDF...")
 
 	resp, err := client.ConvertURLToPDF("https://example.com",
 		gotenberg.WithPrintBackground(true),
 		gotenberg.WithOutputFilename("example.pdf"),
-		gotenberg.WithPaperSizeLetter(), // Use predefined Letter paper size
+		gotenberg.WithPaperSizeLetter(),
 	)
 	if err != nil {
 		return err
 	}
 
-	// Save PDF
 	err = os.WriteFile("./example.pdf", resp.PDF, 0644)
 	if err != nil {
 		return err
@@ -117,8 +101,7 @@ func convertURLToPDFExample(client *gotenberg.Client) error {
 	return nil
 }
 
-// convertHTMLToPDFWithWebhookExample demonstrates async conversion with webhook
-func convertHTMLToPDFWithWebhookExample(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
+func convertHTMLToPDFWithWebhook(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
 	slog.Info("Converting HTML to PDF with webhook (async)...")
 
 	resp, err := client.ConvertHTMLToPDF(htmlDoc.Bytes(),
@@ -138,7 +121,6 @@ func convertHTMLToPDFWithWebhookExample(client *gotenberg.Client, htmlDoc *bytes
 		return err
 	}
 
-	// When using webhook, PDF is not returned immediately (resp.PDF will be nil)
 	slog.Info("Async HTML to PDF conversion started",
 		"trace", resp.Trace,
 		"pdf_returned", resp.PDF != nil)
@@ -146,17 +128,14 @@ func convertHTMLToPDFWithWebhookExample(client *gotenberg.Client, htmlDoc *bytes
 	return nil
 }
 
-// convertHTMLMinimalExample demonstrates minimal conversion without any options
-func convertHTMLMinimalExample(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
+func convertHTMLMinimal(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
 	slog.Info("Converting HTML to PDF (minimal, no options)...")
 
-	// This is the beauty of functional options - you can call without any options!
 	resp, err := client.ConvertHTMLToPDF(htmlDoc.Bytes())
 	if err != nil {
 		return err
 	}
 
-	// Save PDF
 	err = os.WriteFile("./invoice_minimal.pdf", resp.PDF, 0644)
 	if err != nil {
 		return err
@@ -169,8 +148,8 @@ func convertHTMLMinimalExample(client *gotenberg.Client, htmlDoc *bytes.Buffer) 
 	return nil
 }
 
-func makeHtmlDemo(data model.InvoiceData) *bytes.Buffer {
+func makeHtml(data model.Invoice) *bytes.Buffer {
 	buf := bytes.NewBuffer(nil)
-	templates.Demo.Execute(buf, data)
+	templates.InvoceTemplate.Execute(buf, data)
 	return buf
 }

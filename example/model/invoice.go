@@ -1,6 +1,5 @@
 package model
 
-// Data structures used to populate the demo template.
 type Party struct {
 	Name         string
 	Address      string
@@ -20,7 +19,7 @@ type Item struct {
 	Last        bool
 }
 
-type InvoiceData struct {
+type Invoice struct {
 	InvoiceNumber string
 	CreatedAt     string
 	DueAt         string
@@ -31,8 +30,7 @@ type InvoiceData struct {
 	Total         string
 }
 
-// DemoData is a ready-to-use example value matching the template variables.
-var DemoData = InvoiceData{
+var InvoiceData = Invoice{
 	InvoiceNumber: "123",
 	CreatedAt:     "January 1, 2023",
 	DueAt:         "February 1, 2023",
