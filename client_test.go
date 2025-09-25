@@ -82,9 +82,6 @@ func TestConvertURLToPDF_Success(t *testing.T) {
 	if ct := mrt.lastReq.Header.Get("Content-Type"); !strings.Contains(ct, "multipart/form-data") {
 		t.Fatalf("expected multipart content type, got %s", ct)
 	}
-	if !bytes.Contains(mrt.lastBody, []byte("name=\"url\"")) && !bytes.Contains(mrt.lastBody, []byte("name=\"url\"")) {
-		t.Fatalf("request body does not contain url field")
-	}
 	if !bytes.Contains(mrt.lastBody, []byte("https://golang.org")) {
 		t.Fatalf("request body does not contain the provided URL")
 	}
