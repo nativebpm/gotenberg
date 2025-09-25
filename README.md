@@ -67,7 +67,7 @@ resp, err := client.ConvertURLToPDF("https://example.com",
 indexHTML := []byte(`<html><body><h1>Hello World</h1></body></html>`)
 
 resp, err := client.ConvertHTMLToPDF(indexHTML,
-    gotenberg.A4HTML(),                         // Predefined A4 size
+    gotenberg.A4(),                         // Predefined A4 size
     gotenberg.WithHTMLMargins(0.5, 0.5, 0.5, 0.5),
     gotenberg.WithAdditionalFiles(map[string][]byte{
         "style.css": []byte("body { font-family: Arial; }"),
@@ -131,12 +131,12 @@ func (c *Client) ConvertURLToPDF(url string, opts ...URLToPDFOption) (*PDFRespon
 
 #### HTML to PDF
 ```go
-func (c *Client) ConvertHTMLToPDF(indexHTML []byte, opts ...HTMLToPDFOption) (*PDFResponse, error)
+func (c *Client) ConvertHTMLToPDF(indexHTML []byte, opts ...ConfigOption) (*PDFResponse, error)
 ```
 
 #### Markdown to PDF
 ```go
-func (c *Client) ConvertMarkdownToPDF(indexHTML []byte, markdownFiles map[string][]byte, opts ...MarkdownToPDFOption) (*PDFResponse, error)
+func (c *Client) ConvertMarkdownToPDF(indexHTML []byte, markdownFiles map[string][]byte, opts ...ConfigOption) (*PDFResponse, error)
 ```
 
 ### Response Structure
@@ -196,10 +196,10 @@ Same as HTML options with `WithMarkdown*` prefixed functions:
 #### Paper Sizes
 ```go
 A4()            // A4 for URL conversion
-A4HTML()        // A4 for HTML conversion  
+A4()        // A4 for HTML conversion  
 A4Markdown()    // A4 for Markdown conversion
 Letter()        // Letter for URL conversion
-LetterHTML()    // Letter for HTML conversion
+Letter()    // Letter for HTML conversion
 LetterMarkdown() // Letter for Markdown conversion
 ```
 
@@ -266,7 +266,7 @@ func main() {
     `)
 
     resp, err := client.ConvertHTMLToPDF(html,
-        gotenberg.A4HTML(),
+        gotenberg.A4(),
         gotenberg.WithHTMLMargins(1, 1, 1, 1),
         gotenberg.WithHTMLPrintBackground(true),
         gotenberg.WithHTMLOutputFilename("invoice-12345.pdf"),

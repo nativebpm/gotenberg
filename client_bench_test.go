@@ -161,11 +161,11 @@ func BenchmarkConvertHTMLToPDF_WithOptions(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		resp, err := client.ConvertHTMLToPDF(html,
-			WithHTMLPaperSize(8.5, 11),
-			WithHTMLMargins(1, 1, 1, 1),
-			WithHTMLLandscape(false),
-			WithHTMLPrintBackground(true),
-			WithHTMLOutputFilename("test.pdf"),
+			WithPaperSize(8.5, 11),
+			WithMargins(1, 1, 1, 1),
+			WithLandscape(false),
+			WithPrintBackground(true),
+			WithOutputFilename("test.pdf"),
 		)
 		if err != nil {
 			b.Fatalf("ConvertHTMLToPDF failed: %v", err)
@@ -190,12 +190,12 @@ func BenchmarkConvertHTMLToPDF_WithFiles(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		resp, err := client.ConvertHTMLToPDF(html,
-			WithAdditionalFiles(map[string][]byte{
+			WithHTMLAdditionalFiles(map[string][]byte{
 				"style.css": css,
 				"logo.png":  image,
 			}),
-			WithHeader([]byte("<html><body>Header</body></html>")),
-			WithFooter([]byte("<html><body>Footer</body></html>")),
+			WithHTMLHeader([]byte("<html><body>Header</body></html>")),
+			WithHTMLFooter([]byte("<html><body>Footer</body></html>")),
 		)
 		if err != nil {
 			b.Fatalf("ConvertHTMLToPDF failed: %v", err)
@@ -254,7 +254,7 @@ func BenchmarkOptionCreation(b *testing.B) {
 // BenchmarkConfigApplication measures the cost of applying multiple options to config.
 // Tests functional option pattern performance with realistic option combinations.
 func BenchmarkConfigApplication(b *testing.B) {
-	options := []URLToPDFOption{
+	options := []ConvOption{
 		WithPaperSize(8.5, 11),
 		WithMargins(1, 1, 1, 1),
 		WithSinglePage(false),
@@ -268,7 +268,7 @@ func BenchmarkConfigApplication(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		config := &urlToPDFConfig{}
+		config := &convConfig{}
 		for _, opt := range options {
 			opt(config)
 		}
@@ -304,24 +304,6 @@ func BenchmarkMultipartFormCreation(b *testing.B) {
 		writer.Close()
 		_ = buf.Bytes()
 	}
-}
-
-// BenchmarkUtilityFunctions measures optimized utility function performance.
-// Tests Bool/Float64 pointer helpers with pre-allocated common values.
-func BenchmarkUtilityFunctions(b *testing.B) {
-	b.Run("Bool", func(b *testing.B) {
-		b.ReportAllocs()
-		for i := 0; i < b.N; i++ {
-			_ = Bool(true) // Zero allocations expected only if Bool uses pre-allocated booleans; actual results depend on implementation
-		}
-	})
-
-	b.Run("Float64", func(b *testing.B) {
-		b.ReportAllocs()
-		for i := 0; i < b.N; i++ {
-			_ = Float64(1.5) // Benchmark Float64 pointer helper allocation behavior
-		}
-	})
 }
 
 // BenchmarkLargePayload measures performance with large HTML content.

@@ -29,127 +29,14 @@ func NewClient(httpClient *http.Client, baseURL string) *Client {
 	}
 }
 
-// URLToPDFOption represents a functional option for URL to PDF conversion
-type URLToPDFOption func(*urlToPDFConfig)
-
-// urlToPDFConfig internal configuration for URL to PDF conversion
-type urlToPDFConfig struct {
-	// Page Properties
-	SinglePage              *bool
-	PaperWidth              *float64
-	PaperHeight             *float64
-	MarginTop               *float64
-	MarginBottom            *float64
-	MarginLeft              *float64
-	MarginRight             *float64
-	PreferCSSPageSize       *bool
-	GenerateDocumentOutline *bool
-	GenerateTaggedPDF       *bool
-	PrintBackground         *bool
-	OmitBackground          *bool
-	Landscape               *bool
-	Scale                   *float64
-	NativePageRanges        *string
-
-	// Output options
-	OutputFilename *string
-
-	// Webhook options
-	WebhookURL          *string
-	WebhookErrorURL     *string
-	WebhookMethod       *string
-	WebhookErrorMethod  *string
-	WebhookExtraHeaders map[string]string
-}
-
-// HTMLToPDFOption represents a functional option for HTML to PDF conversion
-type HTMLToPDFOption func(*htmlToPDFConfig)
-
-// htmlToPDFConfig internal configuration for HTML to PDF conversion
-type htmlToPDFConfig struct {
-	// Additional files (images, CSS, fonts, etc.)
-	AdditionalFiles map[string][]byte
-
-	// Header and Footer
-	HeaderHTML []byte
-	FooterHTML []byte
-
-	// Page Properties (same as for URL)
-	SinglePage              *bool
-	PaperWidth              *float64
-	PaperHeight             *float64
-	MarginTop               *float64
-	MarginBottom            *float64
-	MarginLeft              *float64
-	MarginRight             *float64
-	PreferCSSPageSize       *bool
-	GenerateDocumentOutline *bool
-	GenerateTaggedPDF       *bool
-	PrintBackground         *bool
-	OmitBackground          *bool
-	Landscape               *bool
-	Scale                   *float64
-	NativePageRanges        *string
-
-	// Output options
-	OutputFilename *string
-
-	// Webhook options
-	WebhookURL          *string
-	WebhookErrorURL     *string
-	WebhookMethod       *string
-	WebhookErrorMethod  *string
-	WebhookExtraHeaders map[string]string
-}
-
-// MarkdownToPDFOption represents a functional option for Markdown to PDF conversion
-type MarkdownToPDFOption func(*markdownToPDFConfig)
-
-// markdownToPDFConfig internal configuration for Markdown to PDF conversion
-type markdownToPDFConfig struct {
-	// Additional files
-	AdditionalFiles map[string][]byte
-
-	// Header and Footer
-	HeaderHTML []byte
-	FooterHTML []byte
-
-	// Page Properties (same as for URL)
-	SinglePage              *bool
-	PaperWidth              *float64
-	PaperHeight             *float64
-	MarginTop               *float64
-	MarginBottom            *float64
-	MarginLeft              *float64
-	MarginRight             *float64
-	PreferCSSPageSize       *bool
-	GenerateDocumentOutline *bool
-	GenerateTaggedPDF       *bool
-	PrintBackground         *bool
-	OmitBackground          *bool
-	Landscape               *bool
-	Scale                   *float64
-	NativePageRanges        *string
-
-	// Output options
-	OutputFilename *string
-
-	// Webhook options
-	WebhookURL          *string
-	WebhookErrorURL     *string
-	WebhookMethod       *string
-	WebhookErrorMethod  *string
-	WebhookExtraHeaders map[string]string
-}
-
 // ConvertURLToPDF converts URL to PDF
-func (c *Client) ConvertURLToPDF(url string, opts ...URLToPDFOption) (*PDFResponse, error) {
+func (c *Client) ConvertURLToPDF(url string, opts ...ConvOption) (*PDFResponse, error) {
 	if url == "" {
 		return nil, fmt.Errorf("URL is required")
 	}
 
 	// Apply all options
-	config := &urlToPDFConfig{}
+	config := &convConfig{}
 	for _, opt := range opts {
 		opt(config)
 	}
@@ -213,13 +100,13 @@ func (c *Client) ConvertURLToPDF(url string, opts ...URLToPDFOption) (*PDFRespon
 }
 
 // ConvertHTMLToPDF converts HTML to PDF
-func (c *Client) ConvertHTMLToPDF(indexHTML []byte, opts ...HTMLToPDFOption) (*PDFResponse, error) {
+func (c *Client) ConvertHTMLToPDF(indexHTML []byte, opts ...ConvOption) (*PDFResponse, error) {
 	if len(indexHTML) == 0 {
 		return nil, fmt.Errorf("indexHTML is required")
 	}
 
 	// Apply all options
-	config := &htmlToPDFConfig{}
+	config := &convConfig{}
 	for _, opt := range opts {
 		opt(config)
 	}
@@ -304,7 +191,7 @@ func (c *Client) ConvertHTMLToPDF(indexHTML []byte, opts ...HTMLToPDFOption) (*P
 }
 
 // ConvertMarkdownToPDF converts Markdown to PDF
-func (c *Client) ConvertMarkdownToPDF(indexHTML []byte, markdownFiles map[string][]byte, opts ...MarkdownToPDFOption) (*PDFResponse, error) {
+func (c *Client) ConvertMarkdownToPDF(indexHTML []byte, markdownFiles map[string][]byte, opts ...ConvOption) (*PDFResponse, error) {
 	if len(indexHTML) == 0 {
 		return nil, fmt.Errorf("indexHTML is required")
 	}
@@ -313,7 +200,7 @@ func (c *Client) ConvertMarkdownToPDF(indexHTML []byte, markdownFiles map[string
 	}
 
 	// Apply all options
-	config := &markdownToPDFConfig{}
+	config := &convConfig{}
 	for _, opt := range opts {
 		opt(config)
 	}

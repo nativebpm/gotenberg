@@ -1,27 +1,6 @@
 package gotenberg
 
-// Utility functions for creating pointers to basic types
 // These functions help with optional parameters in options structs
-
-// Bool returns a pointer to the bool value
-func Bool(v bool) *bool {
-	return &v
-}
-
-// String returns a pointer to the string value
-func String(v string) *string {
-	return &v
-}
-
-// Float64 returns a pointer to the float64 value
-func Float64(v float64) *float64 {
-	return &v
-}
-
-// Int returns a pointer to the int value
-func Int(v int) *int {
-	return &v
-}
 
 // Predefined paper sizes for convenience
 var (
@@ -41,32 +20,12 @@ var (
 
 // Helper functions for working with predefined paper sizes
 
-// A4 returns A4 paper size option for URL conversion
-func A4() URLToPDFOption {
+// A4 returns A4 paper size option
+func A4() ConvOption {
 	return WithPaperSize(PaperSizeA4[0], PaperSizeA4[1])
 }
 
-// A4HTML returns A4 paper size option for HTML conversion
-func A4HTML() HTMLToPDFOption {
-	return WithHTMLPaperSize(PaperSizeA4[0], PaperSizeA4[1])
-}
-
-// A4Markdown returns A4 paper size option for Markdown conversion
-func A4Markdown() MarkdownToPDFOption {
-	return WithMarkdownPaperSize(PaperSizeA4[0], PaperSizeA4[1])
-}
-
-// Letter returns Letter paper size option for URL conversion
-func Letter() URLToPDFOption {
+// Letter returns Letter paper size option
+func Letter() ConvOption {
 	return WithPaperSize(PaperSizeLetter[0], PaperSizeLetter[1])
-}
-
-// LetterHTML returns Letter paper size option for HTML conversion
-func LetterHTML() HTMLToPDFOption {
-	return WithHTMLPaperSize(PaperSizeLetter[0], PaperSizeLetter[1])
-}
-
-// LetterMarkdown returns Letter paper size option for Markdown conversion
-func LetterMarkdown() MarkdownToPDFOption {
-	return WithMarkdownPaperSize(PaperSizeLetter[0], PaperSizeLetter[1])
 }

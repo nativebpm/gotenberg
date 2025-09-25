@@ -66,12 +66,12 @@ func convertHTMLToPDFExample(client *gotenberg.Client, htmlDoc *bytes.Buffer) er
 	slog.Info("Converting HTML to PDF with options...")
 
 	resp, err := client.ConvertHTMLToPDF(htmlDoc.Bytes(),
-		gotenberg.WithHTMLPrintBackground(true),
-		gotenberg.WithHTMLLandscape(false),
-		gotenberg.WithHTMLScale(1.0),
-		gotenberg.WithHTMLOutputFilename("invoice.pdf"),
-		gotenberg.A4HTML(),                            // Use predefined A4 paper size
-		gotenberg.WithHTMLMargins(1.0, 1.0, 1.0, 1.0), // 1 inch margins
+		gotenberg.WithPrintBackground(true),
+		gotenberg.WithLandscape(false),
+		gotenberg.WithScale(1.0),
+		gotenberg.WithOutputFilename("invoice.pdf"),
+		gotenberg.A4(), // Use predefined A4 paper size
+		gotenberg.WithMargins(1.0, 1.0, 1.0, 1.0), // 1 inch margins
 	)
 	if err != nil {
 		return err
@@ -122,14 +122,14 @@ func convertHTMLToPDFWithWebhookExample(client *gotenberg.Client, htmlDoc *bytes
 	slog.Info("Converting HTML to PDF with webhook (async)...")
 
 	resp, err := client.ConvertHTMLToPDF(htmlDoc.Bytes(),
-		gotenberg.WithHTMLPrintBackground(true),
-		gotenberg.WithHTMLOutputFilename("invoice_async.pdf"),
-		gotenberg.WithHTMLWebhook(
+		gotenberg.WithPrintBackground(true),
+		gotenberg.WithOutputFilename("invoice_async.pdf"),
+		gotenberg.WithWebhook(
 			"https://your-webhook-url.com/success",
 			"https://your-webhook-url.com/error",
 		),
-		gotenberg.WithHTMLWebhookMethods("POST", "POST"),
-		gotenberg.WithHTMLWebhookExtraHeaders(map[string]string{
+		gotenberg.WithWebhookMethods("POST", "POST"),
+		gotenberg.WithWebhookExtraHeaders(map[string]string{
 			"Authorization":   "Bearer your-token",
 			"X-Custom-Header": "custom-value",
 		}),

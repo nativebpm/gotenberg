@@ -101,7 +101,7 @@ func TestClient_ConvertURLToPDF(t *testing.T) {
 	tests := []struct {
 		name    string
 		url     string
-		options []URLToPDFOption
+		options []ConvOption
 		wantErr bool
 	}{
 		{
@@ -113,7 +113,7 @@ func TestClient_ConvertURLToPDF(t *testing.T) {
 		{
 			name: "successful conversion with options",
 			url:  "https://example.com",
-			options: []URLToPDFOption{
+			options: []ConvOption{
 				WithPaperSize(8.5, 11),
 				WithMargins(1, 1, 1, 1),
 				WithLandscape(true),
@@ -124,7 +124,7 @@ func TestClient_ConvertURLToPDF(t *testing.T) {
 		{
 			name: "successful conversion with webhook",
 			url:  "https://example.com",
-			options: []URLToPDFOption{
+			options: []ConvOption{
 				WithWebhook("https://webhook.example.com", "https://webhook-error.example.com"),
 				WithWebhookMethods("POST", "PUT"),
 			},
@@ -178,7 +178,7 @@ func TestClient_ConvertHTMLToPDF(t *testing.T) {
 	tests := []struct {
 		name      string
 		indexHTML []byte
-		options   []HTMLToPDFOption
+		options   []ConvOption
 		wantErr   bool
 	}{
 		{
@@ -190,16 +190,16 @@ func TestClient_ConvertHTMLToPDF(t *testing.T) {
 		{
 			name:      "successful conversion with options",
 			indexHTML: indexHTML,
-			options: []HTMLToPDFOption{
-				WithHTMLPaperSize(8.5, 11),
-				WithHTMLMargins(1, 1, 1, 1),
-				WithHTMLLandscape(true),
-				WithHTMLOutputFilename("test.pdf"),
-				WithAdditionalFiles(map[string][]byte{
+			options: []ConvOption{
+				WithPaperSize(8.5, 11),
+				WithMargins(1, 1, 1, 1),
+				WithLandscape(true),
+				WithOutputFilename("test.pdf"),
+				WithHTMLAdditionalFiles(map[string][]byte{
 					"style.css": []byte("body { font-family: Arial; }"),
 				}),
-				WithHeader([]byte("<html><body>Header</body></html>")),
-				WithFooter([]byte("<html><body>Footer</body></html>")),
+				WithHTMLHeader([]byte("<html><body>Header</body></html>")),
+				WithHTMLFooter([]byte("<html><body>Footer</body></html>")),
 			},
 			wantErr: false,
 		},
@@ -255,7 +255,7 @@ func TestClient_ConvertMarkdownToPDF(t *testing.T) {
 		name          string
 		indexHTML     []byte
 		markdownFiles map[string][]byte
-		options       []MarkdownToPDFOption
+		options       []ConvOption
 		wantErr       bool
 	}{
 		{
@@ -269,12 +269,12 @@ func TestClient_ConvertMarkdownToPDF(t *testing.T) {
 			name:          "successful conversion with options",
 			indexHTML:     indexHTML,
 			markdownFiles: markdownFiles,
-			options: []MarkdownToPDFOption{
-				WithMarkdownPaperSize(8.5, 11),
-				WithMarkdownMargins(1, 1, 1, 1),
-				WithMarkdownLandscape(true),
-				WithMarkdownOutputFilename("test.pdf"),
-				WithMarkdownAdditionalFiles(map[string][]byte{
+			options: []ConvOption{
+				WithPaperSize(8.5, 11),
+				WithMargins(1, 1, 1, 1),
+				WithLandscape(true),
+				WithOutputFilename("test.pdf"),
+				WithHTMLAdditionalFiles(map[string][]byte{
 					"style.css": []byte("body { font-family: Arial; }"),
 				}),
 			},
@@ -388,32 +388,6 @@ func TestClient_WebhookResponse(t *testing.T) {
 
 	if resp.Trace != "webhook-trace-id" {
 		t.Errorf("Expected trace 'webhook-trace-id', got %q", resp.Trace)
-	}
-}
-
-func TestUtilityFunctions(t *testing.T) {
-	// Test Bool utility
-	b := Bool(true)
-	if b == nil || *b != true {
-		t.Errorf("Bool(true) failed")
-	}
-
-	// Test String utility
-	s := String("test")
-	if s == nil || *s != "test" {
-		t.Errorf("String(test) failed")
-	}
-
-	// Test Float64 utility
-	f := Float64(1.5)
-	if f == nil || *f != 1.5 {
-		t.Errorf("Float64(1.5) failed")
-	}
-
-	// Test Int utility
-	i := Int(42)
-	if i == nil || *i != 42 {
-		t.Errorf("Int(42) failed")
 	}
 }
 
