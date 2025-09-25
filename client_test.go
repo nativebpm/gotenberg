@@ -2,6 +2,7 @@ package gotenberg
 
 import (
 	"bytes"
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -140,7 +141,7 @@ func TestClient_ConvertURLToPDF(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resp, err := client.ConvertURLToPDF(tt.url, tt.options...)
+			resp, err := client.ConvertURLToPDF(context.Background(), tt.url, tt.options...)
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ConvertURLToPDF() error = %v, wantErr %v", err, tt.wantErr)
@@ -219,7 +220,7 @@ func TestClient_ConvertHTMLToPDF(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resp, err := client.ConvertHTMLToPDF(tt.indexHTML, tt.options...)
+			resp, err := client.ConvertHTMLToPDF(context.Background(), tt.indexHTML, tt.options...)
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ConvertHTMLToPDF() error = %v, wantErr %v", err, tt.wantErr)
@@ -305,7 +306,7 @@ func TestClient_ConvertMarkdownToPDF(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resp, err := client.ConvertMarkdownToPDF(tt.indexHTML, tt.markdownFiles, tt.options...)
+			resp, err := client.ConvertMarkdownToPDF(context.Background(), tt.indexHTML, tt.markdownFiles, tt.options...)
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ConvertMarkdownToPDF() error = %v, wantErr %v", err, tt.wantErr)
@@ -333,7 +334,7 @@ func TestClient_ErrorResponse(t *testing.T) {
 
 	client := NewClient(nil, server.URL)
 
-	resp, err := client.ConvertURLToPDF("https://example.com")
+	resp, err := client.ConvertURLToPDF(context.Background(), "https://example.com")
 
 	if err == nil {
 		t.Errorf("Expected error, got nil")
@@ -369,7 +370,7 @@ func TestClient_WebhookResponse(t *testing.T) {
 
 	client := NewClient(nil, server.URL)
 
-	resp, err := client.ConvertURLToPDF("https://example.com",
+	resp, err := client.ConvertURLToPDF(context.Background(), "https://example.com",
 		WithWebhook("https://webhook.example.com", "https://webhook-error.example.com"))
 
 	if err != nil {

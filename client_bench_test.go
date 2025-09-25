@@ -2,6 +2,7 @@ package gotenberg
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -56,7 +57,7 @@ func BenchmarkConvertURLToPDF_NoOptions(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		resp, err := client.ConvertURLToPDF(url)
+		resp, err := client.ConvertURLToPDF(context.Background(), url)
 		if err != nil {
 			b.Fatalf("ConvertURLToPDF failed: %v", err)
 		}
@@ -77,7 +78,7 @@ func BenchmarkConvertURLToPDF_WithOptions(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		resp, err := client.ConvertURLToPDF(url,
+		resp, err := client.ConvertURLToPDF(context.Background(), url,
 			WithPaperSize(8.5, 11),
 			WithMargins(1, 1, 1, 1),
 			WithLandscape(false),
@@ -104,7 +105,7 @@ func BenchmarkConvertURLToPDF_ManyOptions(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		resp, err := client.ConvertURLToPDF(url,
+		resp, err := client.ConvertURLToPDF(context.Background(), url,
 			WithPaperSize(8.5, 11),
 			WithMargins(1, 1, 1, 1),
 			WithSinglePage(false),
@@ -139,7 +140,7 @@ func BenchmarkConvertHTMLToPDF_NoOptions(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		resp, err := client.ConvertHTMLToPDF(html)
+		resp, err := client.ConvertHTMLToPDF(context.Background(), html)
 		if err != nil {
 			b.Fatalf("ConvertHTMLToPDF failed: %v", err)
 		}
@@ -160,7 +161,7 @@ func BenchmarkConvertHTMLToPDF_WithOptions(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		resp, err := client.ConvertHTMLToPDF(html,
+		resp, err := client.ConvertHTMLToPDF(context.Background(), html,
 			WithPaperSize(8.5, 11),
 			WithMargins(1, 1, 1, 1),
 			WithLandscape(false),
@@ -189,7 +190,7 @@ func BenchmarkConvertHTMLToPDF_WithFiles(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		resp, err := client.ConvertHTMLToPDF(html,
+		resp, err := client.ConvertHTMLToPDF(context.Background(), html,
 			WithHTMLAdditionalFiles(map[string][]byte{
 				"style.css": css,
 				"logo.png":  image,
@@ -220,7 +221,7 @@ func BenchmarkConvertMarkdownToPDF_NoOptions(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		resp, err := client.ConvertMarkdownToPDF(html, markdown)
+		resp, err := client.ConvertMarkdownToPDF(context.Background(), html, markdown)
 		if err != nil {
 			b.Fatalf("ConvertMarkdownToPDF failed: %v", err)
 		}
@@ -329,7 +330,7 @@ func BenchmarkLargePayload(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		resp, err := client.ConvertHTMLToPDF(largeHTML)
+		resp, err := client.ConvertHTMLToPDF(context.Background(), largeHTML)
 		if err != nil {
 			b.Fatalf("ConvertHTMLToPDF failed: %v", err)
 		}

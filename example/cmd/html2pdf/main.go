@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"log"
 	"log/slog"
 	"net/http"
@@ -30,7 +31,7 @@ func main() {
 	logo := image.LogoPNG()
 	files := map[string][]byte{"logo.png": logo}
 
-	resp, err := client.ConvertHTMLToPDF(html.Bytes(),
+	resp, err := client.ConvertHTMLToPDF(context.Background(), html.Bytes(),
 		gotenberg.WithPrintBackground(true),
 		gotenberg.WithLandscape(false),
 		gotenberg.WithScale(1.0),

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"log/slog"
 	"net/http"
@@ -19,7 +20,7 @@ func main() {
 
 	client := gotenberg.NewClient(httpClient, gotenbergURL)
 
-	resp, err := client.ConvertURLToPDF("https://example.com",
+	resp, err := client.ConvertURLToPDF(context.Background(), "https://example.com",
 		gotenberg.WithPrintBackground(true),
 		gotenberg.WithOutputFilename("example.pdf"),
 		gotenberg.WithPaperSizeLetter(),

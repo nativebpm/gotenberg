@@ -2,6 +2,7 @@ package gotenberg
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"mime/multipart"
 	"net/http"
@@ -30,7 +31,7 @@ func NewClient(httpClient *http.Client, baseURL string) *Client {
 }
 
 // ConvertURLToPDF converts URL to PDF
-func (c *Client) ConvertURLToPDF(url string, opts ...ConvOption) (*PDFResponse, error) {
+func (c *Client) ConvertURLToPDF(ctx context.Context, url string, opts ...ConvOption) (*PDFResponse, error) {
 	if url == "" {
 		return nil, fmt.Errorf("URL is required")
 	}
@@ -74,7 +75,7 @@ func (c *Client) ConvertURLToPDF(url string, opts ...ConvOption) (*PDFResponse, 
 		return nil, fmt.Errorf("failed to close writer: %w", err)
 	}
 
-	req, err := http.NewRequest("POST", c.baseURL+"/forms/chromium/convert/url", &buf)
+	req, err := http.NewRequestWithContext(ctx, "POST", c.baseURL+"/forms/chromium/convert/url", &buf)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -100,7 +101,7 @@ func (c *Client) ConvertURLToPDF(url string, opts ...ConvOption) (*PDFResponse, 
 }
 
 // ConvertHTMLToPDF converts HTML to PDF
-func (c *Client) ConvertHTMLToPDF(indexHTML []byte, opts ...ConvOption) (*PDFResponse, error) {
+func (c *Client) ConvertHTMLToPDF(ctx context.Context, indexHTML []byte, opts ...ConvOption) (*PDFResponse, error) {
 	if len(indexHTML) == 0 {
 		return nil, fmt.Errorf("indexHTML is required")
 	}
@@ -165,7 +166,7 @@ func (c *Client) ConvertHTMLToPDF(indexHTML []byte, opts ...ConvOption) (*PDFRes
 		return nil, fmt.Errorf("failed to close writer: %w", err)
 	}
 
-	req, err := http.NewRequest("POST", c.baseURL+"/forms/chromium/convert/html", &buf)
+	req, err := http.NewRequestWithContext(ctx, "POST", c.baseURL+"/forms/chromium/convert/html", &buf)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -191,7 +192,7 @@ func (c *Client) ConvertHTMLToPDF(indexHTML []byte, opts ...ConvOption) (*PDFRes
 }
 
 // ConvertMarkdownToPDF converts Markdown to PDF
-func (c *Client) ConvertMarkdownToPDF(indexHTML []byte, markdownFiles map[string][]byte, opts ...ConvOption) (*PDFResponse, error) {
+func (c *Client) ConvertMarkdownToPDF(ctx context.Context, indexHTML []byte, markdownFiles map[string][]byte, opts ...ConvOption) (*PDFResponse, error) {
 	if len(indexHTML) == 0 {
 		return nil, fmt.Errorf("indexHTML is required")
 	}
@@ -266,7 +267,7 @@ func (c *Client) ConvertMarkdownToPDF(indexHTML []byte, markdownFiles map[string
 		return nil, fmt.Errorf("failed to close writer: %w", err)
 	}
 
-	req, err := http.NewRequest("POST", c.baseURL+"/forms/chromium/convert/markdown", &buf)
+	req, err := http.NewRequestWithContext(ctx, "POST", c.baseURL+"/forms/chromium/convert/markdown", &buf)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
