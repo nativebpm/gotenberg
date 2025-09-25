@@ -13,7 +13,7 @@ import (
 
 	"github.com/nativebpm/gotenberg-client"
 	"github.com/nativebpm/gotenberg-client/example/model"
-	"github.com/nativebpm/gotenberg-client/example/templates"
+	"github.com/nativebpm/gotenberg-client/example/templates/invoice"
 )
 
 func main() {
@@ -167,7 +167,7 @@ func convertHTMLMinimal(client *gotenberg.Client, htmlDoc *bytes.Buffer) error {
 
 func makeHtml(data model.Invoice) *bytes.Buffer {
 	buf := bytes.NewBuffer(nil)
-	templates.InvoiceTemplate.Execute(buf, data)
+	invoice.Template.Execute(buf, data)
 	return buf
 }
 
