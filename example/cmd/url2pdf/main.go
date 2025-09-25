@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"log/slog"
 	"net/http"
@@ -29,11 +30,20 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := os.WriteFile("./example.pdf", resp.PDF, 0644); err != nil {
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	pdfData, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := os.WriteFile("./example.pdf", pdfData, 0644); err != nil {
 		log.Fatal(err)
 	}
 
 	slog.Info("URL to PDF conversion completed",
-		"pdf_size", len(resp.PDF),
-		"trace", resp.Trace)
+		"pdf_size", resp.ContentLength,
+		"trace", resp.Header.Get("Gotenberg-Trace"))
 }

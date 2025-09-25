@@ -2,33 +2,11 @@ package gotenberg
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"mime/multipart"
 	"net/http"
 	"strconv"
 	"strings"
 )
-
-// PDFResponse represents response from Gotenberg API
-type PDFResponse struct {
-	PDF                []byte
-	ContentType        string
-	ContentLength      int64
-	ContentDisposition string
-	Trace              string
-}
-
-// GotenbergError represents error from Gotenberg API
-type GotenbergError struct {
-	StatusCode int
-	Message    string
-	Trace      string
-}
-
-func (e *GotenbergError) Error() string {
-	return fmt.Sprintf("gotenberg error (status %d): %s", e.StatusCode, e.Message)
-}
 
 // pageProperties internal type for page parameters
 type pageProperties struct {
@@ -56,48 +34,6 @@ type webhookOptions struct {
 	Method       *string
 	ErrorMethod  *string
 	ExtraHeaders map[string]string
-}
-
-// doRequest performs HTTP request and handles response
-func (c *Client) doRequest(req *http.Request) (*PDFResponse, error) {
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("failed to send request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	// Read body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	trace := resp.Header.Get("Gotenberg-Trace")
-
-	switch resp.StatusCode {
-	case http.StatusOK:
-		return &PDFResponse{
-			PDF:                body,
-			ContentType:        resp.Header.Get("Content-Type"),
-			ContentLength:      resp.ContentLength,
-			ContentDisposition: resp.Header.Get("Content-Disposition"),
-			Trace:              trace,
-		}, nil
-
-	case http.StatusNoContent:
-		// Webhook response - file will be sent asynchronously
-		return &PDFResponse{
-			PDF:   nil, // When using webhook PDF is not returned immediately
-			Trace: trace,
-		}, nil
-
-	default:
-		return nil, &GotenbergError{
-			StatusCode: resp.StatusCode,
-			Message:    string(body),
-			Trace:      trace,
-		}
-	}
 }
 
 // addFileField adds file to multipart form

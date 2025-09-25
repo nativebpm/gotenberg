@@ -31,7 +31,7 @@ func NewClient(httpClient *http.Client, baseURL string) *Client {
 }
 
 // ConvertURLToPDF converts URL to PDF
-func (c *Client) ConvertURLToPDF(ctx context.Context, url string, opts ...ConvOption) (*PDFResponse, error) {
+func (c *Client) ConvertURLToPDF(ctx context.Context, url string, opts ...ConvOption) (*http.Response, error) {
 	if url == "" {
 		return nil, fmt.Errorf("URL is required")
 	}
@@ -97,11 +97,11 @@ func (c *Client) ConvertURLToPDF(ctx context.Context, url string, opts ...ConvOp
 		req.Header.Set("Gotenberg-Output-Filename", *config.OutputFilename)
 	}
 
-	return c.doRequest(req)
+	return c.httpClient.Do(req)
 }
 
 // ConvertHTMLToPDF converts HTML to PDF
-func (c *Client) ConvertHTMLToPDF(ctx context.Context, indexHTML []byte, opts ...ConvOption) (*PDFResponse, error) {
+func (c *Client) ConvertHTMLToPDF(ctx context.Context, indexHTML []byte, opts ...ConvOption) (*http.Response, error) {
 	if len(indexHTML) == 0 {
 		return nil, fmt.Errorf("indexHTML is required")
 	}
@@ -188,11 +188,11 @@ func (c *Client) ConvertHTMLToPDF(ctx context.Context, indexHTML []byte, opts ..
 		req.Header.Set("Gotenberg-Output-Filename", *config.OutputFilename)
 	}
 
-	return c.doRequest(req)
+	return c.httpClient.Do(req)
 }
 
 // ConvertMarkdownToPDF converts Markdown to PDF
-func (c *Client) ConvertMarkdownToPDF(ctx context.Context, indexHTML []byte, markdownFiles map[string][]byte, opts ...ConvOption) (*PDFResponse, error) {
+func (c *Client) ConvertMarkdownToPDF(ctx context.Context, indexHTML []byte, markdownFiles map[string][]byte, opts ...ConvOption) (*http.Response, error) {
 	if len(indexHTML) == 0 {
 		return nil, fmt.Errorf("indexHTML is required")
 	}
@@ -289,5 +289,5 @@ func (c *Client) ConvertMarkdownToPDF(ctx context.Context, indexHTML []byte, mar
 		req.Header.Set("Gotenberg-Output-Filename", *config.OutputFilename)
 	}
 
-	return c.doRequest(req)
+	return c.httpClient.Do(req)
 }

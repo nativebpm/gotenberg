@@ -49,6 +49,5 @@ func main() {
 	}
 
 	slog.Info("Async HTML to PDF conversion started",
-		"trace", resp.Trace,
-		"pdf_returned", resp.PDF != nil)
+		"trace", resp.Header.Get("Gotenberg-Trace"))
 }
