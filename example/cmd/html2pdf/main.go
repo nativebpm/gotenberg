@@ -11,7 +11,7 @@ import (
 	"github.com/nativebpm/gotenberg-client"
 	"github.com/nativebpm/gotenberg-client/example/model"
 	"github.com/nativebpm/gotenberg-client/example/pkg/image"
-	"github.com/nativebpm/gotenberg-client/example/templates/invoice"
+	"github.com/nativebpm/gotenberg-client/example/pkg/templates/invoice"
 )
 
 func main() {
