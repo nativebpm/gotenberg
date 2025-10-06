@@ -1,4 +1,4 @@
-module github.com/nativebpm/connectors/gotenberg
+module github.com/nativebpm/gotenberg
 
 go 1.21
 

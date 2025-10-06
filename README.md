@@ -3,7 +3,7 @@
 Go client for [Gotenberg](https://gotenberg.dev/) — document conversion service supporting Chromium, LibreOffice, and PDF manipulation engines.
 
 ```bash
-go get github.com/nativebpm/connectors/gotenberg
+go get github.com/nativebpm/gotenberg
 ```
 
 ## Features
