@@ -5,10 +5,10 @@ package gotenberg
 import (
 	"net/http"
 
-	"github.com/nativebpm/connectors/gotenberg/internal/chromium"
-	"github.com/nativebpm/connectors/gotenberg/internal/gotenberg"
-	"github.com/nativebpm/connectors/gotenberg/internal/libreoffice"
-	"github.com/nativebpm/connectors/gotenberg/internal/pdfengines"
+	"github.com/nativebpm/gotenberg/internal/chromium"
+	"github.com/nativebpm/gotenberg/internal/gotenberg"
+	"github.com/nativebpm/gotenberg/internal/libreoffice"
+	"github.com/nativebpm/gotenberg/internal/pdfengines"
 	"github.com/nativebpm/connectors/httpclient"
 )
 

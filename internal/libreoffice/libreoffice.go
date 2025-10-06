@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nativebpm/connectors/gotenberg/internal/gotenberg"
+	"github.com/nativebpm/gotenberg/internal/gotenberg"
 	"github.com/nativebpm/connectors/httpclient"
 )
 
