@@ -2,12 +2,6 @@
 
 Go client for [Gotenberg](https://gotenberg.dev/) — document conversion service supporting Chromium, LibreOffice, and PDF manipulation engines.
 
-Main repository:
-```bash
-go get github.com/nativebpm/connectors/gotenberg
-```
-
-Mirror repository:
 ```bash
 go get github.com/nativebpm/connectors/gotenberg
 ```
