@@ -3,6 +3,7 @@
 package gotenberg
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/nativebpm/connectors/gotenberg/internal/chromium"
@@ -32,6 +33,16 @@ func NewClient(httpClient http.Client, baseURL string) (*Client, error) {
 	return &Client{
 		client: client,
 	}, nil
+}
+
+func (c *Client) WithLogger(logger *slog.Logger) *Client {
+	c.client = c.client.WithLogger(logger)
+	return c
+}
+
+func (c *Client) Use(middleware httpclient.Middleware) *Client {
+	c.client = c.client.Use(middleware)
+	return c
 }
 
 func (c *Client) Chromium() *chromium.Chromium {
