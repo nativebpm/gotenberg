@@ -6,11 +6,11 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/nativebpm/connectors/gotenberg/internal/chromium"
-	"github.com/nativebpm/connectors/gotenberg/internal/gotenberg"
-	"github.com/nativebpm/connectors/gotenberg/internal/libreoffice"
-	"github.com/nativebpm/connectors/gotenberg/internal/pdfengines"
-	"github.com/nativebpm/connectors/httpclient"
+	"github.com/nativebpm/gotenberg/internal/chromium"
+	"github.com/nativebpm/gotenberg/internal/gotenberg"
+	"github.com/nativebpm/gotenberg/internal/libreoffice"
+	"github.com/nativebpm/gotenberg/internal/pdfengines"
+	"github.com/nativebpm/httpclient"
 )
 
 // Re-export common types for easier access.

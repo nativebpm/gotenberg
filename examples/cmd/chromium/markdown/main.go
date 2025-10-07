@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/nativebpm/connectors/gotenberg"
-	"github.com/nativebpm/connectors/gotenberg/examples/pkg/templates/markdown"
+	"github.com/nativebpm/gotenberg"
+	"github.com/nativebpm/gotenberg/examples/pkg/templates/markdown"
 )
 
 func main() {

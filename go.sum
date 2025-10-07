@@ -1,2 +1,4 @@
 github.com/nativebpm/connectors/httpclient v0.1.1 h1:5JxQ+LjKq2n/U1NerBG0kyH2CEp2/M3pTWK6/dFM2Wo=
 github.com/nativebpm/connectors/httpclient v0.1.1/go.mod h1:Two9T6JfOi12HHIZClriB6v/I8SPbvo91G2+TLYEMcA=
+github.com/nativebpm/httpclient v0.1.1 h1:+E3mqCo8aHRYWEo/QP5c94DvM6QMOD7sBHzwxYh6Dac=
+github.com/nativebpm/httpclient v0.1.1/go.mod h1:Mzu2lbcM6Re83fJPnbVCgo0RrjjxZOl8rR/siLRAlgA=
