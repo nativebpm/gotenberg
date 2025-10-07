@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/nativebpm/httpclient"
+	"github.com/nativebpm/connectors/httpclient"
 )
 
 // HealthResponse represents the response from the health check endpoint.

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/nativebpm/gotenberg/internal/gotenberg"
-	"github.com/nativebpm/httpclient"
+	"github.com/nativebpm/connectors/httpclient"
 )
 
 // LibreOffice represents a Gotenberg conversion request builder.

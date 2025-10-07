@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/nativebpm/httpclient"
+	"github.com/nativebpm/connectors/httpclient"
 )
 
 type downloadFrom struct {

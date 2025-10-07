@@ -10,7 +10,7 @@ import (
 	"github.com/nativebpm/gotenberg/internal/gotenberg"
 	"github.com/nativebpm/gotenberg/internal/libreoffice"
 	"github.com/nativebpm/gotenberg/internal/pdfengines"
-	"github.com/nativebpm/httpclient"
+	"github.com/nativebpm/connectors/httpclient"
 )
 
 // Re-export common types for easier access.

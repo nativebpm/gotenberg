@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/nativebpm/gotenberg/internal/gotenberg"
-	"github.com/nativebpm/httpclient"
+	"github.com/nativebpm/connectors/httpclient"
 )
 
 // PDFEngines represents a Gotenberg conversion request builder.
