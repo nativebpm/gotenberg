@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/nativebpm/connectors/httpclient"
+	"github.com/nativebpm/connectors/streamhttp"
 )
 
 // HealthResponse represents the response from the health check endpoint.
@@ -17,7 +17,7 @@ type HealthResponse struct {
 // GetHealth performs a health check on the Gotenberg service.
 // It returns the overall status and details about each module (e.g., Chromium, LibreOffice).
 func (c *Client) GetHealth(ctx context.Context) (*HealthResponse, error) {
-	resp, err := c.client.Request(ctx, httpclient.GET, "/health").Send()
+	resp, err := c.client.Request(ctx, streamhttp.GET, "/health").Send()
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (c *Client) GetHealth(ctx context.Context) (*HealthResponse, error) {
 }
 
 func (c *Client) GetVersion(ctx context.Context) (string, error) {
-	resp, err := c.client.Request(ctx, httpclient.GET, "/version").Send()
+	resp, err := c.client.Request(ctx, streamhttp.GET, "/version").Send()
 	if err != nil {
 		return "", err
 	}
@@ -47,7 +47,7 @@ func (c *Client) GetVersion(ctx context.Context) (string, error) {
 }
 
 func (c *Client) GetMetrics(ctx context.Context) (string, error) {
-	resp, err := c.client.Request(ctx, httpclient.GET, "/prometheus/metrics").Send()
+	resp, err := c.client.Request(ctx, streamhttp.GET, "/prometheus/metrics").Send()
 	if err != nil {
 		return "", err
 	}

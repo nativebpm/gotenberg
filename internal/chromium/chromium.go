@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/nativebpm/gotenberg/internal/gotenberg"
-	"github.com/nativebpm/connectors/httpclient"
+	"github.com/nativebpm/connectors/streamhttp"
 )
 
 // Chromium represents a Gotenberg conversion request builder.
@@ -17,7 +17,7 @@ type Chromium struct {
 	*gotenberg.Gotenberg
 }
 
-func NewChromium(client *httpclient.HTTPClient) *Chromium {
+func NewChromium(client *streamhttp.Client) *Chromium {
 	return &Chromium{
 		Gotenberg: gotenberg.NewGotenberg(client),
 	}

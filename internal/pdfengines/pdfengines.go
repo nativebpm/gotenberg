@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/nativebpm/gotenberg/internal/gotenberg"
-	"github.com/nativebpm/connectors/httpclient"
+	"github.com/nativebpm/connectors/streamhttp"
 )
 
 // PDFEngines represents a Gotenberg conversion request builder.
@@ -17,7 +17,7 @@ type PDFEngines struct {
 	*gotenberg.Gotenberg
 }
 
-func NewPDFEngines(client *httpclient.HTTPClient) *PDFEngines {
+func NewPDFEngines(client *streamhttp.Client) *PDFEngines {
 	return &PDFEngines{
 		Gotenberg: gotenberg.NewGotenberg(client),
 	}

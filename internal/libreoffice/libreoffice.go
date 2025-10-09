@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/nativebpm/gotenberg/internal/gotenberg"
-	"github.com/nativebpm/connectors/httpclient"
+	"github.com/nativebpm/connectors/streamhttp"
 )
 
 // LibreOffice represents a Gotenberg conversion request builder.
@@ -17,7 +17,7 @@ type LibreOffice struct {
 	*gotenberg.Gotenberg
 }
 
-func NewLibreOffice(client *httpclient.HTTPClient) *LibreOffice {
+func NewLibreOffice(client *streamhttp.Client) *LibreOffice {
 	return &LibreOffice{
 		Gotenberg: gotenberg.NewGotenberg(client),
 	}

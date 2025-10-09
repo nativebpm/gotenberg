@@ -3,14 +3,13 @@
 package gotenberg
 
 import (
-	"log/slog"
 	"net/http"
 
 	"github.com/nativebpm/gotenberg/internal/chromium"
 	"github.com/nativebpm/gotenberg/internal/gotenberg"
 	"github.com/nativebpm/gotenberg/internal/libreoffice"
 	"github.com/nativebpm/gotenberg/internal/pdfengines"
-	"github.com/nativebpm/connectors/httpclient"
+	"github.com/nativebpm/connectors/streamhttp"
 )
 
 // Re-export common types for easier access.
@@ -19,13 +18,14 @@ type Response = gotenberg.Response
 // Client is a Gotenberg HTTP client that wraps the base HTTP client
 // with Gotenberg-specific functionality for document conversion.
 type Client struct {
-	client *httpclient.HTTPClient
+	client *streamhttp.Client
 }
 
 // NewClient creates a new Gotenberg client with the given HTTP client and base URL.
 // Returns an error if the base URL is invalid.
-func NewClient(httpClient http.Client, baseURL string) (*Client, error) {
-	client, err := httpclient.NewClient(httpClient, baseURL)
+func NewClient(httpClient http.Client, baseURL string,
+	middlewares ...func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	client, err := streamhttp.NewClient(httpClient, baseURL, middlewares...)
 	if err != nil {
 		return nil, err
 	}
@@ -33,16 +33,6 @@ func NewClient(httpClient http.Client, baseURL string) (*Client, error) {
 	return &Client{
 		client: client,
 	}, nil
-}
-
-func (c *Client) WithLogger(logger *slog.Logger) *Client {
-	c.client = c.client.WithLogger(logger)
-	return c
-}
-
-func (c *Client) Use(middleware httpclient.Middleware) *Client {
-	c.client = c.client.Use(middleware)
-	return c
 }
 
 func (c *Client) Chromium() *chromium.Chromium {
