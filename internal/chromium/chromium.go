@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/nativebpm/gotenberg/internal/gotenberg"
-	"github.com/nativebpm/connectors/streamhttp"
+	"github.com/nativebpm/connectors/httpstream"
 )
 
 // Chromium represents a Gotenberg conversion request builder.
@@ -17,7 +17,7 @@ type Chromium struct {
 	*gotenberg.Gotenberg
 }
 
-func NewChromium(client *streamhttp.Client) *Chromium {
+func NewChromium(client *httpstream.Client) *Chromium {
 	return &Chromium{
 		Gotenberg: gotenberg.NewGotenberg(client),
 	}
@@ -26,37 +26,37 @@ func NewChromium(client *streamhttp.Client) *Chromium {
 // ConvertHTML creates a request to convert HTML content to PDF.
 // The html parameter should contain the HTML content to be converted.
 func (r *Chromium) ConvertHTML(ctx context.Context, html io.Reader) *Chromium {
-	r.Req = r.Client.Multipart(ctx, "/forms/chromium/convert/html").File("files", "index.html", html)
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/chromium/convert/html").File("files", "index.html", html)
 	return r
 }
 
 // ConvertURL creates a request to convert a web page at the given URL to PDF.
 func (r *Chromium) ConvertURL(ctx context.Context, url string) *Chromium {
-	r.Req = r.Client.Multipart(ctx, "/forms/chromium/convert/url").Param("url", url)
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/chromium/convert/url").Param("url", url)
 	return r
 }
 
 // ConvertMarkdown creates a request to convert Markdown content to PDF.
 func (r *Chromium) ConvertMarkdown(ctx context.Context, html io.Reader) *Chromium {
-	r.Req = r.Client.Multipart(ctx, "/forms/chromium/convert/markdown").File("files", "index.html", html)
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/chromium/convert/markdown").File("files", "index.html", html)
 	return r
 }
 
 // ScreenshotURL creates a request to take a screenshot of a web page at the given URL.
 func (r *Chromium) ScreenshotURL(ctx context.Context, url string) *Chromium {
-	r.Req = r.Client.Multipart(ctx, "/forms/chromium/screenshot/url").Param("url", url)
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/chromium/screenshot/url").Param("url", url)
 	return r
 }
 
 // ScreenshotHTML creates a request to take a screenshot of HTML content.
 func (r *Chromium) ScreenshotHTML(ctx context.Context, html io.Reader) *Chromium {
-	r.Req = r.Client.Multipart(ctx, "/forms/chromium/screenshot/html").File("files", "index.html", html)
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/chromium/screenshot/html").File("files", "index.html", html)
 	return r
 }
 
 // ScreenshotMarkdown creates a request to take a screenshot of Markdown content.
 func (r *Chromium) ScreenshotMarkdown(ctx context.Context, html io.Reader) *Chromium {
-	r.Req = r.Client.Multipart(ctx, "/forms/chromium/screenshot/markdown").File("files", "index.html", html)
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/chromium/screenshot/markdown").File("files", "index.html", html)
 	return r
 }
 

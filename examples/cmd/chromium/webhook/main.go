@@ -48,7 +48,7 @@ func main() {
 
 	gotenbergURL := `http://localhost:3000`
 
-	httpClient := http.Client{
+	httpClient := &http.Client{
 		Timeout: 90 * time.Second,
 	}
 

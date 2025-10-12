@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/nativebpm/gotenberg/internal/gotenberg"
-	"github.com/nativebpm/connectors/streamhttp"
+	"github.com/nativebpm/connectors/httpstream"
 )
 
 // PDFEngines represents a Gotenberg conversion request builder.
@@ -17,7 +17,7 @@ type PDFEngines struct {
 	*gotenberg.Gotenberg
 }
 
-func NewPDFEngines(client *streamhttp.Client) *PDFEngines {
+func NewPDFEngines(client *httpstream.Client) *PDFEngines {
 	return &PDFEngines{
 		Gotenberg: gotenberg.NewGotenberg(client),
 	}
@@ -25,37 +25,37 @@ func NewPDFEngines(client *streamhttp.Client) *PDFEngines {
 
 // Convert creates a request to convert PDFs to PDF/A & PDF/UA.
 func (r *PDFEngines) Convert(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/convert")
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/pdfengines/convert")
 	return r
 }
 
 // MetadataRead creates a request to read metadata from PDFs.
 func (r *PDFEngines) MetadataRead(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/metadata/read")
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/pdfengines/metadata/read")
 	return r
 }
 
 // MetadataWrite creates a request to write metadata to PDFs.
 func (r *PDFEngines) MetadataWrite(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/metadata/write")
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/pdfengines/metadata/write")
 	return r
 }
 
 // Merge creates a request to merge PDFs.
 func (r *PDFEngines) Merge(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/merge")
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/pdfengines/merge")
 	return r
 }
 
 // Split creates a request to split PDFs.
 func (r *PDFEngines) Split(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/split")
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/pdfengines/split")
 	return r
 }
 
 // Flatten creates a request to flatten PDFs.
 func (r *PDFEngines) Flatten(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/flatten")
+	r.Req = r.HttpStream.Multipart(ctx, "/forms/pdfengines/flatten")
 	return r
 }
 

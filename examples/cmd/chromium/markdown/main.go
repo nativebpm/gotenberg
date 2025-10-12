@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	httpClient := http.Client{
+	httpClient := &http.Client{
 		Timeout: 30 * time.Second,
 	}
 
