@@ -12,7 +12,7 @@ go get github.com/nativebpm/gotenberg
 - **LibreOffice**: Convert Office documents (Word, Excel, PowerPoint) to PDF
 - **PDF Engines**: Merge, split, and manipulate PDFs
 - **Webhook support**: Async conversions with callback URLs
-- **Stream-first**: Built on `httpstream` for efficient multipart uploads
+- [**Stream-first**: Built on `httpstream` for efficient multipart uploads](https://github.com/nativebpm/httpstream)
 
 ## Conversion Engines
 
