@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/nativebpm/gotenberg"
+	"github.com/nativebpm/gotenberg/v8"
 )
 
 func main() {
