@@ -7,7 +7,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/nativebpm/gotenberg/internal/gotenberg"
+	"github.com/nativebpm/gotenberg/v8/internal/gotenberg"
 	"github.com/nativebpm/httpstream"
 )
 
