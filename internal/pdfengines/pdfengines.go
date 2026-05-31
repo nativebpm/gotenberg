@@ -25,37 +25,37 @@ func NewPDFEngines(client *httpclient.HTTPClient) *PDFEngines {
 
 // Convert creates a request to convert PDFs to PDF/A & PDF/UA.
 func (r *PDFEngines) Convert(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.MultipartRequest(ctx, httpclient.POST, "/forms/pdfengines/convert")
+	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/convert")
 	return r
 }
 
 // MetadataRead creates a request to read metadata from PDFs.
 func (r *PDFEngines) MetadataRead(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.MultipartRequest(ctx, httpclient.POST, "/forms/pdfengines/metadata/read")
+	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/metadata/read")
 	return r
 }
 
 // MetadataWrite creates a request to write metadata to PDFs.
 func (r *PDFEngines) MetadataWrite(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.MultipartRequest(ctx, httpclient.POST, "/forms/pdfengines/metadata/write")
+	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/metadata/write")
 	return r
 }
 
 // Merge creates a request to merge PDFs.
 func (r *PDFEngines) Merge(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.MultipartRequest(ctx, httpclient.POST, "/forms/pdfengines/merge")
+	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/merge")
 	return r
 }
 
 // Split creates a request to split PDFs.
 func (r *PDFEngines) Split(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.MultipartRequest(ctx, httpclient.POST, "/forms/pdfengines/split")
+	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/split")
 	return r
 }
 
 // Flatten creates a request to flatten PDFs.
 func (r *PDFEngines) Flatten(ctx context.Context) *PDFEngines {
-	r.Req = r.Client.MultipartRequest(ctx, httpclient.POST, "/forms/pdfengines/flatten")
+	r.Req = r.Client.Multipart(ctx, "/forms/pdfengines/flatten")
 	return r
 }
 

@@ -26,7 +26,7 @@ func NewLibreOffice(client *httpclient.HTTPClient) *LibreOffice {
 // Convert creates a request to convert Office documents to PDF.
 // The files parameter should contain the Office documents to be converted.
 func (r *LibreOffice) Convert(ctx context.Context) *LibreOffice {
-	r.Req = r.Client.MultipartRequest(ctx, httpclient.POST, "/forms/libreoffice/convert")
+	r.Req = r.Client.Multipart(ctx, "/forms/libreoffice/convert")
 	return r
 }
 
