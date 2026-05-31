@@ -14,6 +14,17 @@ type HealthResponse struct {
 	Details map[string]any `json:"details"`
 }
 
+// getBytes performs a HTTP GET request to the specified path and returns the response body bytes.
+func getBytes(ctx context.Context, stream *httpstream.Client, path string) ([]byte, error) {
+	resp, err := stream.Request(ctx, httpstream.GET, path).Send()
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return io.ReadAll(resp.Body)
+}
+
 // GetHealth performs a health check on the Gotenberg service.
 // It returns the overall status and details about each module (e.g., Chromium, LibreOffice).
 func (c *Client) GetHealth(ctx context.Context) (*HealthResponse, error) {
@@ -31,32 +42,20 @@ func (c *Client) GetHealth(ctx context.Context) (*HealthResponse, error) {
 	return &healthResp, nil
 }
 
+// GetVersion returns the Gotenberg service version.
 func (c *Client) GetVersion(ctx context.Context) (string, error) {
-	resp, err := c.HttpStream.Request(ctx, httpstream.GET, "/version").Send()
+	b, err := getBytes(ctx, c.HttpStream, "/version")
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return string(body), nil
+	return string(b), nil
 }
 
+// GetMetrics returns the Prometheus metrics from the Gotenberg service.
 func (c *Client) GetMetrics(ctx context.Context) (string, error) {
-	resp, err := c.HttpStream.Request(ctx, httpstream.GET, "/prometheus/metrics").Send()
+	b, err := getBytes(ctx, c.HttpStream, "/prometheus/metrics")
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return string(body), nil
+	return string(b), nil
 }

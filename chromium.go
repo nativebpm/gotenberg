@@ -1,27 +1,11 @@
-// Package chromium provides a client for the Gotenberg Chromium service.
-// It offers a convenient API for converting HTML, URLs, and Markdown to PDF documents and screenshots.
-package chromium
+package gotenberg
 
 import (
 	"context"
 	"io"
 	"strconv"
 	"time"
-
-	"github.com/nativebpm/gotenberg/v8/internal/gotenberg"
-	"github.com/nativebpm/httpstream"
 )
-
-// Chromium represents a Gotenberg conversion request builder.
-type Chromium struct {
-	*gotenberg.Gotenberg
-}
-
-func NewChromium(client *httpstream.Client) *Chromium {
-	return &Chromium{
-		Gotenberg: gotenberg.NewGotenberg(client),
-	}
-}
 
 // ConvertHTML creates a request to convert HTML content to PDF.
 // The html parameter should contain the HTML content to be converted.
@@ -61,44 +45,91 @@ func (r *Chromium) ScreenshotMarkdown(ctx context.Context, html io.Reader) *Chro
 }
 
 // Send executes the conversion request and returns the response.
-// Returns an error if the request fails or the conversion cannot be completed.
-func (r *Chromium) Send() (*gotenberg.Response, error) {
-	return r.Gotenberg.Send()
+func (r *Chromium) Send() (*Response, error) {
+	return r.Request.Send()
 }
 
-// Header adds a header to the conversion request.
+// Header adds an HTTP header to the conversion request.
 func (r *Chromium) Header(key, value string) *Chromium {
-	r.Gotenberg.Header(key, value)
+	r.Request.Header(key, value)
 	return r
 }
 
 // Param adds a form parameter to the conversion request.
 func (r *Chromium) Param(key, value string) *Chromium {
-	r.Gotenberg.Param(key, value)
+	r.Request.Param(key, value)
 	return r
 }
 
 // Bool adds a boolean form parameter to the conversion request.
 func (r *Chromium) Bool(fieldName string, value bool) *Chromium {
-	r.Gotenberg.Bool(fieldName, value)
+	r.Request.Bool(fieldName, value)
 	return r
 }
 
 // Float adds a float64 form parameter to the conversion request.
 func (r *Chromium) Float(fieldName string, value float64) *Chromium {
-	r.Gotenberg.Float(fieldName, value)
+	r.Request.Float(fieldName, value)
 	return r
 }
 
 // File adds a file to the conversion request.
 func (r *Chromium) File(filename string, content io.Reader) *Chromium {
-	r.Gotenberg.File("files", filename, content)
+	r.Request.File(filename, content)
+	return r
+}
+
+// WebhookURL sets the webhook URL and HTTP method for successful conversions.
+func (r *Chromium) WebhookURL(url, method string) *Chromium {
+	r.Request.WebhookURL(url, method)
+	return r
+}
+
+// WebhookErrorURL sets the webhook URL and HTTP method for failed conversions.
+func (r *Chromium) WebhookErrorURL(url, method string) *Chromium {
+	r.Request.WebhookErrorURL(url, method)
+	return r
+}
+
+// WebhookEventsURL sets the webhook events URL for structured JSON event callbacks.
+func (r *Chromium) WebhookEventsURL(url string) *Chromium {
+	r.Request.WebhookEventsURL(url)
+	return r
+}
+
+// WebhookHeader adds a custom header to be sent with webhook requests.
+func (r *Chromium) WebhookHeader(key, value string) *Chromium {
+	r.Request.WebhookHeader(key, value)
+	return r
+}
+
+// DownloadFrom sets the downloadFrom parameter for downloading files from URLs.
+func (r *Chromium) DownloadFrom(url string, headers map[string]string) *Chromium {
+	r.Request.DownloadFrom(url, headers)
+	return r
+}
+
+// OutputFilename sets the output filename for the generated PDF.
+func (r *Chromium) OutputFilename(filename string) *Chromium {
+	r.Request.OutputFilename(filename)
+	return r
+}
+
+// Trace sets the request trace identifier for debugging and monitoring.
+func (r *Chromium) Trace(trace string) *Chromium {
+	r.Request.Trace(trace)
 	return r
 }
 
 // Timeout sets a timeout for the request.
 func (r *Chromium) Timeout(duration time.Duration) *Chromium {
-	r.Gotenberg.Timeout(duration)
+	r.Request.Timeout(duration)
+	return r
+}
+
+// Metadata sets the metadata for the operation.
+func (r *Chromium) Metadata(key, value string) *Chromium {
+	r.Request.Metadata(key, value)
 	return r
 }
 
@@ -137,45 +168,6 @@ func (r *Chromium) ScreenshotOptimizeForSpeed(optimize bool) *Chromium {
 	return r.Bool("optimizeForSpeed", optimize)
 }
 
-// WebhookURL sets the webhook URL and HTTP method for successful conversions.
-func (r *Chromium) WebhookURL(url, method string) *Chromium {
-	r.Gotenberg.WebhookURL(url, method)
-	return r
-}
-
-// WebhookErrorURL sets the webhook URL and HTTP method for failed conversions.
-func (r *Chromium) WebhookErrorURL(url, method string) *Chromium {
-	r.Gotenberg.WebhookErrorURL(url, method)
-	return r
-}
-
-// WebhookHeader adds a custom header to be sent with webhook requests.
-// Multiple headers can be added by calling this method multiple times.
-func (r *Chromium) WebhookHeader(key, value string) *Chromium {
-	r.Gotenberg.WebhookHeader(key, value)
-	return r
-}
-
-// DownloadFrom sets the downloadFrom parameter for downloading files from URLs.
-// The data should be a slice of DownloadItem representing the download configuration.
-func (r *Chromium) DownloadFrom(url string, headers map[string]string) *Chromium {
-	r.Gotenberg.DownloadFrom(url, headers)
-	return r
-}
-
-// OutputFilename sets the output filename for the generated PDF.
-func (r *Chromium) OutputFilename(filename string) *Chromium {
-	r.Gotenberg.OutputFilename(filename)
-	return r
-}
-
-// Trace sets the request trace identifier for debugging and monitoring.
-// If not set, Gotenberg will assign a unique UUID trace.
-func (r *Chromium) Trace(trace string) *Chromium {
-	r.Gotenberg.Trace(trace)
-	return r
-}
-
 // PaperSize sets the paper size for the PDF using width and height in inches.
 func (r *Chromium) PaperSize(width, height float64) *Chromium {
 	return r.PaperWidth(width).PaperHeight(height)
@@ -197,7 +189,6 @@ func (r *Chromium) PaperSizeLetter() *Chromium {
 }
 
 // Margins sets the page margins for the PDF in inches.
-// Parameters are in order: top, right, bottom, left.
 func (r *Chromium) Margins(top, right, bottom, left float64) *Chromium {
 	return r.MarginTop(top).MarginRight(right).MarginBottom(bottom).MarginLeft(left)
 }
@@ -282,7 +273,37 @@ func (r *Chromium) WaitDelay(value string) *Chromium {
 	return r.Param("waitDelay", value)
 }
 
-// WaitForExpression sets the JavaScript expression to wait before converting an HTML document into PDF until it returns true.
+// WaitForExpression sets the JavaScript expression to wait before converting an HTML document into PDF.
 func (r *Chromium) WaitForExpression(value string) *Chromium {
 	return r.Param("waitForExpression", value)
+}
+
+// WaitForSelector waits for a specific node matching the given CSS selector to become visible before converting.
+func (r *Chromium) WaitForSelector(selector string) *Chromium {
+	return r.Param("waitForSelector", selector)
+}
+
+// IgnoreResourceHttpStatusDomains excludes resources from check.
+func (r *Chromium) IgnoreResourceHttpStatusDomains(domainsJSON string) *Chromium {
+	return r.Param("ignoreResourceHttpStatusDomains", domainsJSON)
+}
+
+// EmulatedMediaFeatures sets CSS media features to simulate.
+func (r *Chromium) EmulatedMediaFeatures(featuresJSON string) *Chromium {
+	return r.Param("emulatedMediaFeatures", featuresJSON)
+}
+
+// SkipNetworkAlmostIdleEvent controls network wait.
+func (r *Chromium) SkipNetworkAlmostIdleEvent(skip bool) *Chromium {
+	return r.Bool("skipNetworkAlmostIdleEvent", skip)
+}
+
+// EmbedsMetadata sets per-file metadata.
+func (r *Chromium) EmbedsMetadata(metadataJSON string) *Chromium {
+	return r.Param("embedsMetadata", metadataJSON)
+}
+
+// ScreenshotDeviceScaleFactor controls the pixel density.
+func (r *Chromium) ScreenshotDeviceScaleFactor(factor float64) *Chromium {
+	return r.Float("deviceScaleFactor", factor)
 }
