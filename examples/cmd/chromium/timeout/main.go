@@ -18,7 +18,7 @@ func main() {
 	time.Sleep(100 * time.Millisecond)
 
 	// Create client pointing to real Gotenberg server
-	client, err := gotenberg.NewClient(http.Client{}, "http://localhost:3000")
+	client, err := gotenberg.NewClient(&http.Client{}, "http://localhost:3000")
 	if err != nil {
 		log.Fatal(err)
 	}

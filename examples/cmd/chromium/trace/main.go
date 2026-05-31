@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	client, err := gotenberg.NewClient(http.Client{}, "http://localhost:3000")
+	client, err := gotenberg.NewClient(&http.Client{}, "http://localhost:3000")
 	if err != nil {
 		log.Fatal(err)
 	}
