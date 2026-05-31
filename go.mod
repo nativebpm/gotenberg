@@ -1,5 +1,5 @@
-module github.com/nativebpm/gotenberg/v8
+module github.com/nativebpm/gotenberg
 
 go 1.21
 
-require github.com/nativebpm/connectors/httpstream v0.0.2
+require github.com/nativebpm/httpclient v0.1.0

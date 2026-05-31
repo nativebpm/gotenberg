@@ -6,11 +6,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/nativebpm/gotenberg/v8"
+	"github.com/nativebpm/gotenberg"
 )
 
 func main() {
-	client, err := gotenberg.NewClient(&http.Client{}, "http://localhost:3000")
+	client, err := gotenberg.NewClient(http.Client{}, "http://localhost:3000")
 	if err != nil {
 		log.Fatal(err)
 	}

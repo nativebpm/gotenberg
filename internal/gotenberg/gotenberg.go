@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/nativebpm/connectors/httpstream"
+	"github.com/nativebpm/httpclient"
 )
 
 type downloadFrom struct {
@@ -25,17 +25,17 @@ type Response struct {
 // Gotenberg provides common functionality for building Gotenberg requests.
 // It wraps the underlying multipart request and provides shared methods.
 type Gotenberg struct {
-	HttpStream *httpstream.Client
-	Req        *httpstream.Multipart
-	Wh         map[string]string
-	Meta       map[string]string
-	Df         []downloadFrom
+	Client *httpclient.HTTPClient
+	Req    *httpclient.Multipart
+	Wh     map[string]string
+	Meta   map[string]string
+	Df     []downloadFrom
 }
 
 // NewGotenberg creates a new RequestBuilder with the given client.
-func NewGotenberg(httpStream *httpstream.Client) *Gotenberg {
+func NewGotenberg(client *httpclient.HTTPClient) *Gotenberg {
 	return &Gotenberg{
-		HttpStream: httpStream,
+		Client: client,
 	}
 }
 

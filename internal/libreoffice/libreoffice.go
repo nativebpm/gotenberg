@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nativebpm/gotenberg/v8/internal/gotenberg"
-	"github.com/nativebpm/connectors/httpstream"
+	"github.com/nativebpm/gotenberg/internal/gotenberg"
+	"github.com/nativebpm/httpclient"
 )
 
 // LibreOffice represents a Gotenberg conversion request builder.
@@ -17,7 +17,7 @@ type LibreOffice struct {
 	*gotenberg.Gotenberg
 }
 
-func NewLibreOffice(client *httpstream.Client) *LibreOffice {
+func NewLibreOffice(client *httpclient.HTTPClient) *LibreOffice {
 	return &LibreOffice{
 		Gotenberg: gotenberg.NewGotenberg(client),
 	}
@@ -26,7 +26,7 @@ func NewLibreOffice(client *httpstream.Client) *LibreOffice {
 // Convert creates a request to convert Office documents to PDF.
 // The files parameter should contain the Office documents to be converted.
 func (r *LibreOffice) Convert(ctx context.Context) *LibreOffice {
-	r.Req = r.HttpStream.Multipart(ctx, "/forms/libreoffice/convert")
+	r.Req = r.Client.MultipartRequest(ctx, httpclient.POST, "/forms/libreoffice/convert")
 	return r
 }
 
